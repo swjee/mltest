@@ -70,7 +70,7 @@ def relu(X):
             relu.threshold = tf.Variable(0.0, name="threshold")
             print("inside hass att")
 
-        print( relu.threshold)
+
         return tf.maximum(z, relu.threshold, name="max")  # 책에는 없습니다.
 #threshold = tf.Variable(0.0, name="threshold")
 # relu.......
