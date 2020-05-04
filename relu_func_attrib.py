@@ -55,19 +55,6 @@ logdir = "{}/run-{}/".format(root_logdir, now)
 print( logdir )
 
 
-#---------------------------------
-
-file_writer = tf.summary.FileWriter(logdir, tf.get_default_graph())
-
-sess = tf.Session()
-sess.run(x.initializer)
-sess.run(y.initializer)
-result = sess.run(f)
-print(result)
-
-
-sess.close()
-
 # namespace test...
 
 
@@ -79,18 +66,49 @@ def relu(X):
         w = tf.Variable(tf.random_normal(w_shape), name="weights")    # 책에는 없습니다.
         b = tf.Variable(0.0, name="bias")                             # 책에는 없습니다.
         z = tf.add(tf.matmul(X, w), b, name="z")                      # 책에는 없습니다.
-        return tf.maximum(z, threshold, name="max")                          # 책에는 없습니다.
+        if not hasattr(relu, "threshold"):
+            relu.threshold = tf.Variable(0.0, name="threshold")
+            print("inside hass att")
 
-
-threshold = tf.Variable(0.0, name="threshold")
+        print( relu.threshold)
+        return tf.maximum(z, relu.threshold, name="max")  # 책에는 없습니다.
+#threshold = tf.Variable(0.0, name="threshold")
 # relu.......
 logdir = "{}/relu".format(root_logdir)
 print( logdir)
 n_features = 3
 X = tf.placeholder(tf.float32, shape=(None, n_features), name="X")
-relus = [relu(X,threshold) for i in range(5)]
+relu.threshold = tf.Variable(19.0 , name = "threshold" )
+relus = [relu(X) for i in range(5)]
 output = tf.add_n(relus, name="output")
 
+
+
+init = tf.global_variables_initializer()
 file_writer = tf.summary.FileWriter(logdir, tf.get_default_graph())
 file_writer.close()
+
+#  run tf graph.
+print('------------------------------------')
+
+with tf.Session() as sess:
+    sess.run(init)
+
+    [output_val, relu_th_val ]  = sess.run([ output,relu.threshold ] , feed_dict={X:[[0,2,3]]})
+    print('resultis ')
+    print( output_val )
+    print( relu_th_val)
+    # relu.threshold = tf.Variable(30.0, name="threshold")
+    op1 = tf.assign( relu.threshold , 30.0 )
+    print('second..')
+    sess.run(op1 )
+    [output_val, relu_th_val] = sess.run([output, relu.threshold], feed_dict={X: [[0, 2, 3]]})
+    print('resultis ')
+    print(output_val)
+    print(relu_th_val)
+
+    [output_val, relu_th_val] = sess.run([output, relu.threshold], feed_dict={X: [[0, 2, 3]],relu.threshold:100.0})
+    print('resultis ')
+    print(output_val)
+    print(relu_th_val)
 

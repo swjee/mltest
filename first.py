@@ -71,24 +71,23 @@ sess.close()
 
 reset_graph()
 
-def relu(X,threshold):
+def relu(X):
     with tf.name_scope("relu"):
         w_shape = (int(X.get_shape()[1]), 1)                          # 책에는 없습니다.
         w = tf.Variable(tf.random_normal(w_shape), name="weights")    # 책에는 없습니다.
         b = tf.Variable(0.0, name="bias")                             # 책에는 없습니다.
         z = tf.add(tf.matmul(X, w), b, name="z")                      # 책에는 없습니다.
-        return tf.maximum(z, threshold, name="max")                          # 책에는 없습니다.
+        return tf.maximum(z,0.0, name="max")                          # 책에는 없습니다.
 
 
-threshold = tf.Variable(0.0, name="threshold")
+# threshold = tf.Variable(0.0, name="threshold")
 # relu.......
 logdir = "{}/relu".format(root_logdir)
 print( logdir)
 n_features = 3
 X = tf.placeholder(tf.float32, shape=(None, n_features), name="X")
-relus = [relu(X,threshold) for i in range(5)]
+relus = [relu(X) for i in range(5)]
 output = tf.add_n(relus, name="output")
 
 file_writer = tf.summary.FileWriter(logdir, tf.get_default_graph())
 file_writer.close()
-
