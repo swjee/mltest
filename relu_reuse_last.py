@@ -63,9 +63,6 @@ from datetime import datetime
 
 now = datetime.utcnow().strftime("%Y%m%d%H%M%S")
 root_logdir = "C:/MLTEST/handson-ml-master/tf_logs"
-logdir = "{}/run-{}/".format(root_logdir, now)
-
-print(logdir)
 
 # namespace test...
 
@@ -96,7 +93,6 @@ def relu(X):
 
 
 logdir = "{}/relu_final".format(root_logdir)
-print(logdir)
 n_features = 3
 X = tf.placeholder(tf.float32, shape=(None, n_features), name="X")
 
@@ -122,6 +118,7 @@ file_writer.close()
 
 #  run tf graph.
 print('------------------------------------')
+print(logdir)
 
 with tf.Session() as sess:
     sess.run(init)
