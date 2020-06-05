@@ -70,7 +70,8 @@ plt.title("Derivative ft", fontsize=14)
 plt.axis([-5, 5, -0.2, 1.2])
 
 save_fig("activation_functions_plot")
-plt.show()
+
+#plt.show()
 
 def heaviside(z):
     return (z >= 0).astype(z.dtype)
@@ -96,8 +97,9 @@ plt.plot([0, 1], [0, 1], "gs", markersize=20)
 plt.plot([0, 1], [1, 0], "y^", markersize=20)
 plt.title("Activationg func: Heavy-side", fontsize=14)
 plt.grid(True)
-plt.show()
+#plt.show()
 
+plt.figure(figsize=(10,4))
 plt.subplot(122)
 plt.contourf(x1, x2, z2)
 plt.plot([0, 1], [0, 1], "gs", markersize=20)
