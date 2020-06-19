@@ -65,9 +65,9 @@ def IsHave2Name(str_name):
 
     list_oneline = pattern_word.findall(str_name.lower())
     if len(list_oneline) > 0:
-        return True
+        return 1
     else:
-        return False
+        return 0
 
 def Address(list_data,chk_word_list):
 #if not in nothing assign

@@ -26,12 +26,21 @@ import tensorflow as tf
 import tensorflow.compat.v2.feature_column as fc
 #import tensorflow.feature_column as fc
 
+from titanic.load import load , MakeTopWord,GetTopWord,IsHave2Name,Address,OtherName
 
 
-train_data_org = pd.read_csv(TRAIN_DATA_FILE)
-test_data_org = pd.read_csv(TEST_DATA_FILE)
+train_data_org,test_data_org = load()
 
-#train_data.groupby('Sex').Survived.mean().plot(kind='barh').set_xlabel('% survive')
+list_address = ['mr', 'miss', 'mrs', 'master']
+list_address_col = Address( train_data_org['Name'],list_address)
+train_data_org['Address'] = pd.Series(list_address_col)
+list_address_col = Address( test_data_org['Name'],list_address)
+test_data_org['Address'] = pd.Series(list_address_col)
+
+list_address_col = OtherName( train_data_org['Name'])
+train_data_org['OtherName'] = pd.Series(list_address_col)
+list_address_col = OtherName( test_data_org['Name'])
+test_data_org['OtherName'] = pd.Series(list_address_col)
 
 
 #Age의 Null값 변환.
@@ -85,7 +94,8 @@ for i in train_data_nn.columns:
 
 from sklearn.model_selection import train_test_split
 
-train_data, varify_data = train_test_split(train_data_nn, test_size=0.2,random_state=42)
+#train_data, varify_data = train_test_split(train_data_nn, test_size=0.2,random_state=42)
+train_data, varify_data = train_test_split(train_data_nn, test_size=0.2)
 
 from tensorflow import feature_column
 from tensorflow.keras import layers
@@ -174,6 +184,15 @@ Ticket_OneCh_l = feature_column.categorical_column_with_vocabulary_list('Ticket_
 Ticket_OneCh_one_hot = feature_column.indicator_column(Ticket_OneCh_l)
 feature_columns.append( Ticket_OneCh_one_hot)
 
+
+Address_col = feature_column.categorical_column_with_vocabulary_list('Address',list_address)
+Address_col_one_hot= feature_column.indicator_column(Address_col)
+feature_columns.append( Address_col_one_hot)
+
+OtherName_col = feature_column.categorical_column_with_vocabulary_list('OtherName',[1,0])
+OtherName_col_one_hot= feature_column.indicator_column(OtherName_col)
+feature_columns.append( OtherName_col_one_hot)
+
 '''
 for col in train_data_org.columns:
     print(col,'------------------')
@@ -243,4 +262,5 @@ cnt = (vr_nparray==pr_nparray).sum()
 n,=pr_nparray.shape
 
 print( cnt/n )
+
 
